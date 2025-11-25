@@ -8,11 +8,8 @@ import attendanceRoutes from './routes/attendanceRoutes.js';
 
 const app = express();
 
-app.use(
-  cors({
-    origin: "*",
-  })
-);
+app.use(cors({ origin: true, credentials: true }));
+
 
 
 app.use(express.json());
