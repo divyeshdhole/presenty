@@ -3,10 +3,11 @@ import bcrypt from 'bcryptjs';
 
 const buildCookieOptions = () => ({
   httpOnly: true,
-  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-  secure: process.env.NODE_ENV === 'production',
-  maxAge: 12 * 60 * 60 * 1000, // 12 hours
+  secure: true,          // Force HTTPS secure cookie
+  sameSite: "None",      // Required for cross-site cookies
+  maxAge: 12 * 60 * 60 * 1000,
 });
+
 
 export const login = async (req, res) => {
   const { password } = req.body;
