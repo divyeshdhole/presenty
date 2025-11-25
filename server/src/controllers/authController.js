@@ -1,14 +1,6 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
-const buildCookieOptions = () => ({
-  httpOnly: true,
-  secure: true,          // Force HTTPS secure cookie
-  sameSite: "None",      // Required for cross-site cookies
-  maxAge: 12 * 60 * 60 * 1000,
-});
-
-
 export const login = async (req, res) => {
   const { password } = req.body;
 
@@ -41,8 +33,10 @@ export const login = async (req, res) => {
     expiresIn: '12h',
   });
 
-  res.cookie('token', token, buildCookieOptions());
-  return res.json({ message: 'Login successful' });
+  return res.json({
+    message: 'Login successful',
+    token,
+  });
 };
 
 export const me = (req, res) => {
@@ -50,6 +44,5 @@ export const me = (req, res) => {
 };
 
 export const logout = (_req, res) => {
-  res.clearCookie('token', buildCookieOptions());
   return res.json({ message: 'Logged out' });
 };
