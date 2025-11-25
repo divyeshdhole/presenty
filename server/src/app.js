@@ -10,10 +10,10 @@ const app = express();
 
 app.use(
   cors({
-    origin: (origin, callback) => callback(null, origin || '*'),
-    credentials: true,
+    origin: "*",
   })
 );
+
 
 app.use(express.json());
 app.use(cookieParser());
