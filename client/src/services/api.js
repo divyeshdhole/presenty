@@ -1,8 +1,21 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const TOKEN_KEY = 'presenty_token';
 
 const defaultHeaders = {
   'Content-Type': 'application/json',
 };
+
+export const setAuthToken = (token) => {
+  if (token) {
+    localStorage.setItem(TOKEN_KEY, token);
+  }
+};
+
+export const clearAuthToken = () => {
+  localStorage.removeItem(TOKEN_KEY);
+};
+
+export const getAuthToken = () => localStorage.getItem(TOKEN_KEY);
 
 const handleResponse = async (response) => {
   const data = await response.json().catch(() => ({}));
@@ -15,7 +28,6 @@ const handleResponse = async (response) => {
 
 const request = async (path, options = {}) => {
   const config = {
-    credentials: 'include',
     ...options,
   };
 
@@ -23,9 +35,16 @@ const request = async (path, options = {}) => {
     config.body = JSON.stringify(options.body);
   }
 
+  const token = getAuthToken();
+
   config.headers = {
     ...defaultHeaders,
     ...(options.headers || {}),
+    ...(token
+      ? {
+          Authorization: `Bearer ${token}`,
+        }
+      : {}),
   };
 
   const response = await fetch(`${API_BASE_URL}${path}`, config);

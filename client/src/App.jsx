@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { authApi, attendanceApi, memberApi } from './services/api';
+import { authApi, attendanceApi, memberApi, setAuthToken, clearAuthToken } from './services/api';
 
 const SummaryCard = ({ label, value, accent }) => (
   <div className="rounded-2xl bg-white/80 shadow-md backdrop-blur border border-white/60 p-5 transition hover:-translate-y-1">
@@ -136,7 +136,10 @@ function App() {
     setLoginLoading(true);
     setLoginError('');
     try {
-      await authApi.login(password.trim());
+      const data = await authApi.login(password.trim());
+      if (data?.token) {
+        setAuthToken(data.token);
+      }
       setAuthState({ checking: false, authed: true });
       setPassword('');
       toast.success('Welcome back! 👋');
@@ -151,6 +154,7 @@ function App() {
     try {
       await authApi.logout();
     } finally {
+      clearAuthToken();
       setAuthState({ checking: false, authed: false });
       setAttendance([]);
       setMembers([]);
